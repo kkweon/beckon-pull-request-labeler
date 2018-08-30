@@ -1,8 +1,20 @@
 {
-  "name": "beckon-github-bot",
+  "name": "beckon-pull-request-labeler",
   "version": "1.0.0",
   "description": "Beckon GitHub Bot",
   "main": "dist/index.js",
+  "homepage": "https://github.com/kkweon/beckon-pull-request-labeler.git",
+  "bugs": "https://github.com/kkweon/beckon-pull-request-labeler.git",
+  "engines": {
+    "node": "*"
+  },
+  "keywords": [
+    "GitHub"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kkweon/beckon-pull-request-labeler.git"
+  },
   "author": "Mo Kweon",
   "license": "MIT",
   "private": true,
