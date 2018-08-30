@@ -7,11 +7,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "tsc",
+    "build": "yarn lint && tsc",
     "start": "yarn build && node dist/index.js",
     "lint": "tsc --noEmit && tslint --project .",
     "lint:fix": "yarn lint --fix",
-    "format": "prettier --write *.{js,json,ts} src/**/*.{js,ts,json}"
+    "format": "prettier --write *.{js,json,ts} src/**/*.{js,ts,json}",
+    "check-github-api": "curl \"https://api.github.com/rate_limit?access_token=$GITHUB_TOKEN\""
   },
   "devDependencies": {
     "@types/node": "^10.9.3",

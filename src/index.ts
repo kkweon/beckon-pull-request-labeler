@@ -94,7 +94,7 @@ export async function getAppropriateLabels(
     }
   }
 
-  if (pr.head && pr.head.repo.allow_merge_commit === false) {
+  if (await hasMergeConflict(pr as GitHubPullRequest)) {
     const mergeConflictLabel = beckonGitHubLabelMap.get(
       BeckonGitHubLabelMapKeys.mergeConflict,
     );
@@ -285,15 +285,23 @@ export async function replaceAllLabels(
   }
 }
 
-/*octokit.issues
-  .getLabels({owner, repo})
-  .then((res: GitHubResponse<GitHubLabel[]>) => {
-    const labels = res.data;
-    console.log(JSON.stringify(labels, null, 4));
-  });*/
+export async function hasMergeConflict(
+  pr: GitHubPullRequest,
+): Promise<boolean> {
+  try {
+    const response = await octokit.pullRequests.get({
+      owner,
+      repo,
+      number: pr.number,
+    });
+    return response.data.mergeable === false;
+  } catch (_) {
+    throw new Error(`Unable to check if the PR is mergable: ${pr.html_url}`);
+  }
+}
 
 octokit.pullRequests.getAll({ owner, repo }).then(async res => {
-  const pullRequests = res.data.slice(res.data.length - 2, res.data.length - 1);
+  const pullRequests = res.data;
 
   if (!pullRequests) {
     throw new Error("No pr is found");
@@ -308,12 +316,17 @@ octokit.pullRequests.getAll({ owner, repo }).then(async res => {
     const appropriateLabels = rightLabelsOfPromises[i];
     const pr = pullRequests[i];
     printPR(appropriateLabels, pr as GitHubPullRequest);
-    updatePromise.push(
-      replaceAllLabels(pr as GitHubPullRequest, appropriateLabels),
-    );
+
+    if (process.argv[2] === "update") {
+      updatePromise.push(
+        replaceAllLabels(pr as GitHubPullRequest, appropriateLabels),
+      );
+    }
   }
 
-  await Promise.all(updatePromise);
+  if (process.argv[2] === "update") {
+    await Promise.all(updatePromise);
+  }
 });
 
 function printPR(labels: GitHubLabel[], pr: GitHubPullRequest) {
