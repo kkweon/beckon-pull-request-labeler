@@ -1,4 +1,7 @@
 # beckon-pull-request-labeler
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/kkweon/beckon-pull-request-labeler.svg)](https://greenkeeper.io/)
+
 PR Labeler
 
 
