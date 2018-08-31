@@ -24,11 +24,17 @@
     "lint": "tsc --noEmit && tslint --project .",
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write *.{js,json,ts} src/**/*.{js,ts,json}",
-    "check-github-api": "curl \"https://api.github.com/rate_limit?access_token=$GITHUB_TOKEN\""
+    "check-github-api": "curl \"https://api.github.com/rate_limit?access_token=$GITHUB_TOKEN\"",
+    "test": "mocha --require ts-node/register src/**/*.spec.ts"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
     "@types/node": "^10.9.3",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
     "prettier": "^1.14.2",
+    "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "tslint-plugin-prettier": "^1.3.0",
