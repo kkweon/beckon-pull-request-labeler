@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { hasLabel, isPRStale } from "./github-helper";
+import { hasLabel, isPRStale, hasExtension, isFrontEndFile } from "./github-helper";
 import { GitHubLabel, GitHubPullRequest } from "./models";
 const ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
 
@@ -41,6 +41,20 @@ describe("hasLabel", () => {
     expect(hasLabel(prWithoutLabel, mockLabel)).to.be.false;
   });
 });
+
+describe("hasExtension", () => {
+    it("returns true when it has the extension", () => {
+        expect(hasExtension("transformer.json", "json")).to.be.true;
+    })
+
+    it("checks temp.json is not front end file", () => {
+        expect(isFrontEndFile("temp.json")).to.be.false;
+    })
+
+    it("checks package.json is a front end file", () => {
+        expect(isFrontEndFile("package.json")).to.be.true;
+    })
+})
 
 function generateMockPR(payload: object): GitHubPullRequest {
   return {

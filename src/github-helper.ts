@@ -1,18 +1,26 @@
 import { GitHubLabel, GitHubPullRequest } from "./models";
 
 export function hasExtension(filename: string, ext: string): boolean {
-  return filename.split(".").pop() === ext;
+  return filename.slice(-ext.length) === ext;
 }
 
 export function isFrontEndFile(filename: string): boolean {
-  const extensions = ["js", "ts", "jsx", "json", "tsx", "tmpl", "html", "tpl"];
+  const extensions = [
+    "js",
+    "ts",
+    "jsx",
+    "package.json",
+    "tsx",
+    "tmpl",
+    "html",
+    "tpl",
+  ];
 
   return extensions.some(ext => hasExtension(filename, ext));
 }
 
 export function isBackEndFile(filename: string): boolean {
-  const extensions = ["java", "thrift"];
-  return extensions.some(ext => hasExtension(filename, ext));
+  return !isFrontEndFile(filename);
 }
 
 export function isBackEndFiles(files: string[]): boolean {
