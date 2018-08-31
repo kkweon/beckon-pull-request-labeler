@@ -1,6 +1,12 @@
 import { expect } from "chai";
-import { hasLabel, isPRStale, hasExtension, isFrontEndFile } from "./github-helper";
-import { GitHubLabel, GitHubPullRequest } from "./models";
+import {
+  hasLabel,
+  isPRStale,
+  hasExtension,
+  isFrontEndFile,
+  extractFinalReviewState,
+} from "./github-helper";
+import { GitHubLabel, GitHubPullRequest, GitHubReview } from "./models";
 const ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
 
 describe("isPRStale", () => {
@@ -43,18 +49,41 @@ describe("hasLabel", () => {
 });
 
 describe("hasExtension", () => {
-    it("returns true when it has the extension", () => {
-        expect(hasExtension("transformer.json", "json")).to.be.true;
-    })
+  it("returns true when it has the extension", () => {
+    expect(hasExtension("transformer.json", "json")).to.be.true;
+  });
 
-    it("checks temp.json is not front end file", () => {
-        expect(isFrontEndFile("temp.json")).to.be.false;
-    })
+  it("checks temp.json is not front end file", () => {
+    expect(isFrontEndFile("temp.json")).to.be.false;
+  });
 
-    it("checks package.json is a front end file", () => {
-        expect(isFrontEndFile("package.json")).to.be.true;
-    })
-})
+  it("checks package.json is a front end file", () => {
+    expect(isFrontEndFile("package.json")).to.be.true;
+  });
+});
+
+describe("extractFinalReviewState", () => {
+  it("returns final review states from GitHubReviews", () => {
+    const reviews: GitHubReview[] = [
+      generateMockReview({ user: { id: 3 }, state: "CHANGES_REQUESTED" }),
+      generateMockReview({ user: { id: 3 }, state: "APPROVED" }),
+    ];
+
+    expect(extractFinalReviewState(reviews)).to.deep.equal(["APPROVED"]);
+  });
+
+  it("returns a correct even if multiple people", () => {
+    const reviews: GitHubReview[] = [
+      generateMockReview({ user: { id: 3 }, state: "CHANGES_REQUESTED" }),
+      generateMockReview({ user: { id: 10 }, state: "COMMENTED" }),
+      generateMockReview({ user: { id: 3 }, state: "APPROVED" }),
+    ];
+
+    expect(extractFinalReviewState(reviews).sort()).to.deep.equal(
+      ["COMMENTED", "APPROVED"].sort(),
+    );
+  });
+});
 
 function generateMockPR(payload: object): GitHubPullRequest {
   return {
@@ -66,4 +95,10 @@ function generateMockLabel(payload: object): GitHubLabel {
   return {
     ...payload,
   } as GitHubLabel;
+}
+
+function generateMockReview(payload: object): GitHubReview {
+  return {
+    ...payload,
+  } as GitHubReview;
 }

@@ -1,4 +1,4 @@
-import { GitHubLabel, GitHubPullRequest } from "./models";
+import { GitHubLabel, GitHubPullRequest, GitHubReview } from "./models";
 
 export function hasExtension(filename: string, ext: string): boolean {
   return filename.slice(-ext.length) === ext;
@@ -52,4 +52,20 @@ export function isPRStale(pr: GitHubPullRequest): boolean {
   const dateDiff = new Date().getTime() - lastModifiedDate;
 
   return dateDiff / ONE_DAY >= MAX_DAYS;
+}
+
+interface UserIdToReviewState {
+  [userId: string]: string;
+}
+
+export function extractFinalReviewState(reviews: GitHubReview[]): string[] {
+  return Object.values(
+    reviews.reduce(
+      (acc, review) => {
+        acc[review.user.id] = review.state;
+        return acc;
+      },
+      {} as UserIdToReviewState,
+    ),
+  );
 }

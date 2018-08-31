@@ -17,7 +17,12 @@ import github, {
   IssuesReplaceAllLabelsParams,
   PullRequestsGetReviewsParams,
 } from "@octokit/rest";
-import { isBackEndFiles, isFrontEndFiles, isPRStale } from "./github-helper";
+import {
+  extractFinalReviewState,
+  isBackEndFiles,
+  isFrontEndFiles,
+  isPRStale,
+} from "./github-helper";
 const octokit = new github();
 
 // This is a sync function
@@ -40,7 +45,7 @@ export async function getAppropriateLabels(
   //
   const labels: GitHubLabel[] = [];
   const reviewStates = await getReviewStatesFromPR(pr);
-  const reviewStateNames = reviewStates.map(r => r.state);
+  const reviewStateNames = extractFinalReviewState(reviewStates);
   let _isApprovedPR = false;
 
   const dontMergeLabel = beckonGitHubLabelMap.get(
