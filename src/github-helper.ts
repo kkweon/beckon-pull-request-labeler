@@ -10,6 +10,7 @@ export function isFrontEndFile(filename: string): boolean {
     "ts",
     "jsx",
     "package.json",
+    "package-lock.json",
     "tsx",
     "tmpl",
     "html",
@@ -20,7 +21,9 @@ export function isFrontEndFile(filename: string): boolean {
 }
 
 export function isBackEndFile(filename: string): boolean {
-  return !isFrontEndFile(filename);
+  const extensions = ["java", "sql", "thrift"];
+
+  return extensions.some(ext => hasExtension(filename, ext));
 }
 
 export function isBackEndFiles(files: string[]): boolean {
