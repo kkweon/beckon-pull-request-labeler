@@ -25,7 +25,7 @@
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write *.{js,json,ts} src/**/*.{js,ts,json}",
     "check-github-api": "curl \"https://api.github.com/rate_limit?access_token=$GITHUB_TOKEN\"",
-    "test": "mocha --require ts-node/register src/**/*.spec.ts"
+    "test": "yarn lint && mocha --require ts-node/register src/**/*.spec.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
