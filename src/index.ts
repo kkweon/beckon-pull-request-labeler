@@ -210,7 +210,7 @@ export async function getReviewStatesFromPR(
     } as PullRequestsGetReviewsParams);
     return result.data;
   } catch (_) {
-    throw new Error(`Unable to check PR review state for ${pr.url}`);
+    throw new Error(`Unable to fetch PR reviews for ${pr.html_url}`);
   }
 }
 
@@ -219,7 +219,8 @@ export async function isApprovedPR(pr: GitHubPullRequest): Promise<boolean> {
     const reviews = await getReviewStatesFromPR(pr);
     return reviews.some(r => r.state === GitHubReviewState.APPROVED);
   } catch (_) {
-    throw new Error(`Unable to check PR review state for ${pr.url}`);
+    // FIXME more robust error handling
+    throw new Error(`Unable to fetch PR reviews for ${pr.html_url}`);
   }
 }
 
