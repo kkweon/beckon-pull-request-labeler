@@ -13,8 +13,6 @@ import {
 import github, {
   AuthUserToken,
   GetAllResponseItem,
-  IssuesAddLabelsParams,
-  IssuesReplaceAllLabelsParams,
   PullRequestsGetReviewsParams,
 } from "@octokit/rest";
 import {
@@ -185,7 +183,7 @@ export async function addLabels(
       repo,
       number: prNumber,
       labels: labelNames,
-    } as IssuesAddLabelsParams);
+    });
     return handleResponse(response);
   } catch (err) {
     throw new Error(
@@ -242,7 +240,7 @@ export async function replaceAllLabels(
       repo,
       number: pr.number,
       labels: labelNames,
-    } as IssuesReplaceAllLabelsParams);
+    });
     return handleResponse(response);
   } catch (_) {
     throw new Error(`Failed replace labels with ${labelNames} to ${pr.url}`);
