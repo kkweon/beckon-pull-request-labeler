@@ -50,13 +50,17 @@ export async function getAppropriateLabels(
     BeckonGitHubLabelMapKeys.dontMerge,
   );
 
-  if (pr.user && pr.user.login === "ChadBellan") {
-    return [];
-  }
-
   if (dontMergeLabel && pr.labels) {
     if (!!pr.labels.find(l => l.id === dontMergeLabel.id)) {
       labels.push(dontMergeLabel);
+    }
+  }
+
+  // if it has hotfix label, keep the hotfix label
+  const hotfixLabel = beckonGitHubLabelMap.get(BeckonGitHubLabelMapKeys.hotfix);
+  if (hotfixLabel && pr.labels) {
+    if (!!pr.labels.find(l => l.id === hotfixLabel.id)) {
+      labels.push(hotfixLabel);
     }
   }
 
@@ -93,21 +97,14 @@ export async function getAppropriateLabels(
     const stageLabel = beckonGitHubLabelMap.get(
       BeckonGitHubLabelMapKeys.toStage,
     );
+
     if (stageLabel) {
       labels.push(stageLabel);
     }
   }
 
-  if (pr.base && pr.base.ref === "production") {
-    const hotfixLabel = beckonGitHubLabelMap.get(
-      BeckonGitHubLabelMapKeys.hotfix,
-    );
-    if (hotfixLabel) {
-      labels.push(hotfixLabel);
-    }
-  }
-
-  if (_isApprovedPR) {
+  // if it's already approved or targeting production, stops here
+  if (_isApprovedPR || (pr.base && pr.base.ref === "production")) {
     return labels;
   }
 
