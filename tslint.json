@@ -14,7 +14,8 @@
       true,
       "allow-leading-underscore",
       "allow-trailing-underscore"
-    ]
+    ],
+    "no-console": [true, "log"]
   },
   "rulesDirectory": []
 }

@@ -49,6 +49,11 @@ export async function getAppropriateLabels(
   const dontMergeLabel = beckonGitHubLabelMap.get(
     BeckonGitHubLabelMapKeys.dontMerge,
   );
+
+  if (pr.user && pr.user.login === "ChadBellan") {
+    return [];
+  }
+
   if (dontMergeLabel && pr.labels) {
     if (!!pr.labels.find(l => l.id === dontMergeLabel.id)) {
       labels.push(dontMergeLabel);
